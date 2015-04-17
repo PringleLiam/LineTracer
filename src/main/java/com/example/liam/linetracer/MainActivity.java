@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
                 long thisId = cursor.getLong(idColumn);
                 String thisTitle = cursor.getString(titleColumn);
                 String thisArtist = cursor.getString(artistColumn);
-                String titleArtist = thisTitle + " " + thisArtist;
+                String titleArtist = thisTitle + "," + thisArtist;
                 songList.put( thisId,titleArtist);
             } while (cursor.moveToNext());
         }
