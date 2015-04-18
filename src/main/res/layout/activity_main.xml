@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="#0099cc" tools:context=".MainActivity">
+    android:layout_height="match_parent" android:background="#ff000000" tools:context=".MainActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -15,6 +15,38 @@
     <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="#ff000000">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="High Score : "
+                    android:id="@+id/textView3"
+                    android:layout_gravity="center_horizontal" />
+
+                <Spinner
+                    android:layout_width="334dp"
+                    android:layout_height="78dp"
+                    android:id="@+id/spinner"
+                    android:background="#ff2a2a2a" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
         <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
@@ -23,15 +55,10 @@
 
             <Button android:id="@+id/dummy_button" style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:text="@string/dummy_button" />
+                android:layout_weight="1" android:text="@string/dummy_button"
+                android:background="#ffff000d" />
 
         </LinearLayout>
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner"
-            android:layout_gravity="top" />
     </FrameLayout>
 
 </FrameLayout>

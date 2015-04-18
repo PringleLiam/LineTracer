@@ -5,6 +5,7 @@ package com.example.liam.linetracer;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DataSetObserver;
@@ -21,7 +22,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,6 +62,7 @@ public class MainActivity extends Activity {
     private HashMap<Long, String> songList = new HashMap<Long,String>();
 
     public static long songID;
+    public static int highScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +70,13 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
         final View contentView = findViewById(R.id.fullscreen_content);
-
-        // Set up an instance of SystemUiHider to control the system UI for
-        // this activity.
-
+        TextView textView =  (TextView)findViewById(R.id.textView3);
+        textView.setText("High Score: "+MainActivity.highScore);
         findViewById(R.id.dummy_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,8 +84,6 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(parent , GameWindow.class);
                 intent.putExtra("Song_ID", songID);
                 startActivity(intent);
-
-
             }
         });
 
@@ -107,7 +117,6 @@ public class MainActivity extends Activity {
             stringList[i] = songList.get(l).split(",")[0];
             i++;
          }
-      //  songID = songList.keySet().iterator().next();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stringList);
         spinner.setAdapter(adapter);
         AdapterView.OnItemSelectedListener adapterSpinner =  new AdapterSpinnerArray(songList);
@@ -121,12 +130,33 @@ public class MainActivity extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
+        try {
+            ScoreHelper scoreHelper = new ScoreHelper();
+            highScore = scoreHelper.checkHighScore(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TextView textView =  (TextView)findViewById(R.id.textView3);
+        textView.setText("High Score: "+highScore);
 
     }
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        try {
+            ScoreHelper scoreHelper = new ScoreHelper();
+            highScore = scoreHelper.checkHighScore(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TextView textView =  (TextView)findViewById(R.id.textView3);
+        textView.setText("High Score: "+highScore);
+
+    }
+
 }
 
 
