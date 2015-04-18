@@ -5,7 +5,9 @@ package com.example.liam.linetracer;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,10 +15,18 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends Activity {
@@ -25,7 +35,7 @@ public class MainActivity extends Activity {
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
     private static final boolean AUTO_HIDE = true;
-
+    private final Activity parent = this;
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
@@ -41,6 +51,7 @@ public class MainActivity extends Activity {
 
     private HashMap<Long, String> songList = new HashMap<Long,String>();
 
+    public static long songID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +69,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Button testButton = (Button) v;
+                Intent intent = new Intent(parent , GameWindow.class);
+                intent.putExtra("Song_ID", songID);
+                startActivity(intent);
 
 
             }
@@ -86,24 +100,23 @@ public class MainActivity extends Activity {
         }
 
 
+         Spinner spinner = (Spinner)findViewById(R.id.spinner);
+         String[] stringList = new String[songList.keySet().size()];
+        int i = 0;
+        for(Long l : songList.keySet()){
+            stringList[i] = songList.get(l).split(",")[0];
+            i++;
+         }
+      //  songID = songList.keySet().iterator().next();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stringList);
+        spinner.setAdapter(adapter);
+        AdapterView.OnItemSelectedListener adapterSpinner =  new AdapterSpinnerArray(songList);
+        spinner.setOnItemSelectedListener(adapterSpinner);
 
-        findViewById(R.id.fullscreen_content).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int x = (int) event.getX();
-                int y = (int) event.getY();
-                System.out.println("X = " + x + "Y = " + y);
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_MOVE:
-                    case MotionEvent.ACTION_UP:
-                }
+}
 
 
-                return false;
-            }
-        });
-    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
