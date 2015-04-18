@@ -9,14 +9,38 @@
         android:layout_height="fill_parent"
         android:weightSum="1">
 
-        <TextView
-            android:layout_width="370dp"
-            android:layout_height="61dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="3"
-            android:id="@+id/textView"
-            android:textColor="#ffffffff"
-            android:textSize="@android:dimen/app_icon_size" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="92dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="3"
+                android:id="@+id/textView"
+                android:textColor="#ffffffff"
+                android:textSize="@android:dimen/app_icon_size"
+                android:layout_weight="0.94" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause"
+                android:id="@+id/button"
+                android:backgroundTint="#ffff000d"
+                android:background="#ffff000d"
+                android:textColor="#ffffffff"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:textSize="@dimen/abc_text_size_title_material" />
+        </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.2dp"

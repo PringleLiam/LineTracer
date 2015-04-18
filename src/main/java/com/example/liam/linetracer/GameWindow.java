@@ -34,6 +34,10 @@ public class GameWindow extends ActionBarActivity {
     private Canvas canvas;
     private ArrayList<Line> lineList = new ArrayList<Line>();
     private Bitmap bitmap;
+    private int distance = 0;
+    private int score = 0;
+    private boolean isFinished = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,49 +51,57 @@ public class GameWindow extends ActionBarActivity {
         drawingImageView.setImageBitmap(bitmap);
 
 
-
-
-
-
         findViewById(R.id.DrawingImageView).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                int x = (int) event.getX();
-                int y = (int) event.getY();
+                if (isFinished) {
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+                    int lineX = lineList.get(0).getXEnd();
+                    TextView textView = (TextView) findViewById(R.id.textView);
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            x = (int) event.getX();
+                            y = (int) event.getY();
+                            distance = x - lineX;
+                            System.out.println(distance);
+                            score += (int) (50 * Math.pow(0.8, Math.abs(distance) / 10));
 
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                         x = (int) event.getX();
-                         y = (int) event.getY();
+                            textView.setText("" + score);
+                            return true;
 
-                        return true;
+                        case MotionEvent.ACTION_MOVE:
+                            x = (int) event.getX();
+                            y = (int) event.getY();
+                            distance = x - lineX;
+                            score += (int) (50 * Math.pow(0.8, Math.abs(distance) / 10));
+                            textView.setText("" + score);
+                            return true;
 
-                    case MotionEvent.ACTION_MOVE:
-                        x = (int) event.getX();
-                        y = (int) event.getY();
-
-                        return true;
-
-                    case MotionEvent.ACTION_UP:
-                        x = (int) event.getX();
-                        y = (int) event.getY();
-
-                        return true;
+                        case MotionEvent.ACTION_UP:
+                            x = (int) event.getX();
+                            y = (int) event.getY();
+                            distance = x - lineX;
+                            score += (int) (50 * Math.pow(0.8, Math.abs(distance) / 10));
+                            textView.setText("" + score);
+                            return true;
 
 
+                    }
+                    distance = x - lineX;
+                    System.out.println(distance);
                 }
-                System.out.println(x + " , " + y);
                 return false;
             }
 
         });
 
 
-     TextView textView = (TextView) findViewById(R.id.textView);
+        TextView textView = (TextView) findViewById(R.id.textView);
         int[] intList = new int[2];
         textView.getLocationOnScreen(intList);
 
-        for(int i : intList) {
+        for (int i : intList) {
             System.out.println(i);
         }
     }
@@ -110,13 +122,14 @@ public class GameWindow extends ActionBarActivity {
             }
 
             public void onFinish() {
-               textView.setText("0");
+
+                textView.setText("0");
                 mp = new MediaPlayer();
                 Uri contentUri = ContentUris.withAppendedId(
                         android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MainActivity.songID);
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 try {
-                    mp.setDataSource(getApplicationContext(),contentUri);
+                    mp.setDataSource(getApplicationContext(), contentUri);
                     mp.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -124,27 +137,16 @@ public class GameWindow extends ActionBarActivity {
                 setVisualizer();
                 visualizer.setEnabled(true);
                 mp.start();
+                isFinished = true;
 
 
             }
         }.start();
-    }
 
-    public void countdown(){
-        TextView textView = (TextView) findViewById(R.id.textView);
-        for (int count = 3; count >= 0; count--){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            String currentCount = "" + count;
-            textView.setText(currentCount);
-        }
 
     }
 
-    private void setVisualizer(){
+    private void setVisualizer() {
         visualizer = new Visualizer(mp.getAudioSessionId());
         visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
         visualizer.setDataCaptureListener(
@@ -152,12 +154,13 @@ public class GameWindow extends ActionBarActivity {
                     public void onWaveFormDataCapture(Visualizer visualizer,
                                                       byte[] bytes, int samplingRate) {
                         int num = 0;
-                        for(byte b : bytes) {
-                            num =+ b;
+                        for (byte b : bytes) {
+                            num = +b;
                         }
                         //num /= bytes.length;
-                        showLines(((num+128)*720)/256);
+                        showLines(((num + 128) * 720) / 256);
                     }
+
                     public void onFftDataCapture(Visualizer visualizer,
                                                  byte[] bytes, int samplingRate) {
 
@@ -167,26 +170,29 @@ public class GameWindow extends ActionBarActivity {
     }
 
 
-    public void showLines(int value){
-        canvas.drawColor(Color.BLACK);
-        Line line = new Line(previousValue,value);
-        previousValue = value;
-        canvas = new Canvas(bitmap);
-       if(lineList.size() > 11){
-           lineList.remove(0);
-      }
-        lineList.add(line);
-        for(Line l : lineList){
-            l.drawLine(canvas);
+    public void showLines(int value) {
+        if (mp.isPlaying()) {
+            canvas.drawColor(Color.BLACK);
+            Line line = new Line(previousValue, value);
+            previousValue = value;
+            canvas = new Canvas(bitmap);
+            if (lineList.size() > 11) {
+                lineList.remove(0);
+            }
+            lineList.add(line);
+            for (Line l : lineList) {
+                l.drawLine(canvas);
+            }
+            drawingImageView.setImageBitmap(bitmap);
+        } else {
+            mp.stop();
+            mp.release();
+            visualizer.release();
+            finish();
         }
-        drawingImageView.setImageBitmap(bitmap);
-
-
-
-
 
     }
 
 
-    }
+}
 
