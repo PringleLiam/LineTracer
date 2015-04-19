@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
@@ -132,7 +136,8 @@ public class MainActivity extends Activity {
         super.onPostCreate(savedInstanceState);
         try {
             ScoreHelper scoreHelper = new ScoreHelper();
-            highScore = scoreHelper.checkHighScore(0);
+            highScore = scoreHelper.checkHighScore(0,getApplicationContext()
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,8 +152,9 @@ public class MainActivity extends Activity {
         super.onResume();
 
         try {
-            ScoreHelper scoreHelper = new ScoreHelper();
-            highScore = scoreHelper.checkHighScore(0);
+                ScoreHelper scoreHelper = new ScoreHelper();
+                highScore = scoreHelper.checkHighScore(GameWindow.score,getApplicationContext());
+                GameWindow.score = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }

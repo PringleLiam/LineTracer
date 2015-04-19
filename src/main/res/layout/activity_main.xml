@@ -37,6 +37,10 @@
                     android:id="@+id/textView3"
                     android:layout_gravity="center_horizontal" />
 
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="200px" />
+
                 <Spinner
                     android:layout_width="334dp"
                     android:layout_height="78dp"

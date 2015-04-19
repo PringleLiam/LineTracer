@@ -49,7 +49,7 @@ public class GameWindow extends ActionBarActivity {
     private ArrayList<Line> lineList = new ArrayList<Line>();
     private Bitmap bitmap;
     private int distance = 0;
-    private int score = 0;
+    public static int score = 0;
     private boolean isFinished = false;
     private boolean isPaused;
 
@@ -188,8 +188,8 @@ public class GameWindow extends ActionBarActivity {
         } else {
             try {
                ScoreHelper scoreHelper = new ScoreHelper();
-               MainActivity.highScore = scoreHelper.checkHighScore(score);
-
+               MainActivity.highScore = scoreHelper.checkHighScore(score,getApplicationContext());
+               score = 0;
 
             } catch (IOException e) {
                 e.printStackTrace();
